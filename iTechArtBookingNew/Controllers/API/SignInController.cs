@@ -36,26 +36,10 @@ namespace iTechArtBookingNew.Controllers.API
 
             var user = ModelToUser(data);
 
-            if (_bookingContext.Users.Count(u => u.Email == user.Email) != 0)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Email is already used!" });
-            if (_bookingContext.Users.Count(u => u.NormalizedUserName == user.UserName.ToUpper()) != 0)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "UserName is already used!" });
-            
-
             var result = await _userManager.CreateAsync(user, data.Password);
-            if (result == null) return StatusCode(
-                        StatusCodes.Status500InternalServerError,
-                        new
-                        {
-                            Message = "User creation failed!",
-                            Errors = result.Errors
-                        });
             await _userManager.AddToRoleAsync(user, "user");
-            return Ok(new
-            {
-                Status = "Success",
-                Message = "User created successfully!"
-            });
+
+            return new OkResult();
         }
 
         private User ModelToUser(SignIn model)

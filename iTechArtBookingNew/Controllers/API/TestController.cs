@@ -14,7 +14,7 @@ namespace iTechArtBookingNew.Controllers.API
     {
         [Authorize]
         [HttpGet]
-        public async Task<bool> get()
+        public async Task<bool> Get()
         {
             return true;
         }
