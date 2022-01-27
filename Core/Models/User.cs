@@ -9,6 +9,5 @@ namespace Core.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public List<Booking> Booking { get; set; }
-        public Role Role { get; set; }
     }
 }
