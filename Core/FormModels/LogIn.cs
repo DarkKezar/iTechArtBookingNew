@@ -9,8 +9,8 @@ namespace Core.FormModels
 {
     public class LogIn
     {
-        [Required(ErrorMessage = "Не указан e-mail")]
-        public string Email { get; set; }
+        [Required(ErrorMessage = "Не указан UserName")]
+        public string UserName { get; set; }
         [Required(ErrorMessage = "Не указан пароль")]
         public string Password { get; set; }
     }

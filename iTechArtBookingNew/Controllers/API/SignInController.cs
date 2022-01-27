@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace iTechArtBookingNew.Controllers.API
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignIn(SignIn data)
+        public async Task<IActionResult> SignIn([Required]SignIn data)
         {
             //await _roleManager.CreateAsync(new Role { Name = "user" });
             //await _roleManager.CreateAsync(new Role { Name = "admin" });
