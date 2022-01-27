@@ -16,7 +16,6 @@ namespace Infrastructure
         { }
 
         public BookingContext()
-        {
-        }
+        { }
     }
 }

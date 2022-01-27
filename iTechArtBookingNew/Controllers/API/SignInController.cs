@@ -15,25 +15,31 @@ namespace iTechArtBookingNew.Controllers.API
     [ApiController]
     public class SignInController : ControllerBase
     {
-
+        private readonly BookingContext _bookingContext;
         private readonly UserManager<User> _userManager;
+        //private readonly RoleManager<Role> _roleManager;
 
-        public SignInController(UserManager<User> userManager)
+        //public SignInController(BookingContext bookingContext, UserManager<User> userManager, RoleManager<Role> roleManager)
+        public SignInController(BookingContext bookingContext, UserManager<User> userManager)
         {
+            _bookingContext = bookingContext;
             _userManager = userManager ?? throw new ArgumentException("Invalid argument.");
+            //_roleManager = roleManager;
         }
 
         [HttpPost]
         public async Task<IActionResult> SignIn(SignIn data)
         {
+            //await _roleManager.CreateAsync(new Role { Name = "user" });
+            //await _roleManager.CreateAsync(new Role { Name = "admin" });
+
             var user = ModelToUser(data);
-            using (var db = new BookingContext())
-            {
-                if (db.Users.Count(u => u.Email == user.Email) != 0)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Email is already used!" });
-                if (db.Users.Count(u => u.NormalizedUserName == user.UserName.ToUpper()) != 0)
-                    return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "UserName is already used!" });
-            }
+
+            if (_bookingContext.Users.Count(u => u.Email == user.Email) != 0)
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "Email is already used!" });
+            if (_bookingContext.Users.Count(u => u.NormalizedUserName == user.UserName.ToUpper()) != 0)
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "UserName is already used!" });
+            
 
             var result = await _userManager.CreateAsync(user, data.Password);
             if (result == null) return StatusCode(
