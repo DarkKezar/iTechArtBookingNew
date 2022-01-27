@@ -85,6 +85,7 @@ namespace iTechArtBookingNew
                 };
             });
 
+
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 6;
