@@ -27,7 +27,7 @@ namespace iTechArtBookingNew.Controllers.API
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignIn([Required] LogIn data)
+        public async Task<IActionResult> SignIn([FromForm][Required] LogIn data)
         {
             User User = await _userManager.FindByEmailAsync(data.Email.Normalize());
             if (User == null)

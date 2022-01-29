@@ -52,6 +52,7 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Room>> Get(Guid hotelId, int page)
         {
+            if (page < 1) page = 1;
             return await db.Rooms.Where(R => R.Hotel.Id == hotelId).Skip((page - 1) * 8).Take(8).ToListAsync();
         }
     }
