@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Core.Models
 {
@@ -11,6 +12,7 @@ namespace Core.Models
         public string Name { get; set; }
         public string Info { get; set; }
         public string ImgSrc { get; set; }
+        [JsonIgnore]
         public Hotel Hotel { get; set; }
     }
 }

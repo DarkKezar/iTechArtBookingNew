@@ -18,5 +18,12 @@ namespace iTechArtBookingNew.Controllers.API
         {
             return true;
         }
+
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        public async Task<int> Get7()
+        {
+            return 7;
+        }
     }
 }
