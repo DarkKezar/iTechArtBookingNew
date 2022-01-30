@@ -12,6 +12,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using iTechArtBookingNew;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Infrastructure.Repositories
 {
@@ -46,6 +47,7 @@ namespace Infrastructure.Repositories
 
             if (await _userManager.CheckPasswordAsync(User, data.Password))
             {
+                if (User.IsDeleted) return new StatusCodeResult(401); //Account deleted
                 var UserRoles = await _userManager.GetRolesAsync(User);
                 var Claims = GetClaims(User, UserRoles);
                 var JwtToken = GetNewToken(Claims);
@@ -70,7 +72,8 @@ namespace Infrastructure.Repositories
             var User = await db.Users.FirstAsync(U => U.Id == userId);
             if (User != null)
             {
-                //some code
+                db.Booking.RemoveRange(db.Booking.Where(B => B.User == User));
+                User.IsDeleted = true;
                 return new OkResult();
             }
             else return new NotFoundResult();
