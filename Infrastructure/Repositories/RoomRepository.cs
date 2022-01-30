@@ -50,6 +50,33 @@ namespace Infrastructure.Repositories
             else return new NotFoundResult();
         }
 
+        public async Task<IActionResult> Delete(Guid roomId)
+        {
+            var Room = await db.Rooms.FirstAsync(R => R.Id == roomId);
+            if (Room != null)
+            {
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        //Just to show transaction
+                        File.Delete(_hostingEnvironment.ContentRootPath + "/wwwroot" + Room.ImgSrc);
+                        db.RemoveRange(db.Booking.Where(B => B.Room == Room));
+                        db.Remove(Room);
+                        await db.SaveChangesAsync();
+                        transaction.Commit();
+                    }
+                    catch 
+                    {
+                        transaction.Rollback();
+                        return new StatusCodeResult(500); //Error
+                    }
+                }
+                return new OkResult();
+            }
+            else return new NotFoundResult();
+        }
+
         public async Task<List<Room>> Get(Guid hotelId, int page)
         {
             if (page < 1) page = 1;

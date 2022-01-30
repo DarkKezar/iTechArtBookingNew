@@ -42,6 +42,30 @@ namespace Infrastructure.Repositories
             return new OkResult();
         }
 
+        public async Task<IActionResult> Delete(Guid hotelId)
+        {
+            var Hotel = await db.Hotels.FirstAsync(H => H.Id == hotelId);
+            if (Hotel != null)
+            {
+                try
+                {
+                    File.Delete(_hostingEnvironment.ContentRootPath + "/wwwroot" + Hotel.IngSrc);
+                    var Rooms = db.Rooms.Where(R => R.Hotel == Hotel);
+                    foreach (var Room in Rooms)
+                    {
+                        db.Booking.RemoveRange(db.Booking.Where(B => B.Room == Room));
+                        db.Rooms.Remove(Room);
+                    }
+                    db.Comments.RemoveRange(db.Comments.Where(C => C.Hotel == Hotel));
+                    db.Hotels.Remove(Hotel);
+                    await db.SaveChangesAsync();
+                    return new OkResult();
+                }
+                catch (Exception e) { return new StatusCodeResult(500); } //Not deleted
+            }
+            else return new NotFoundResult();
+        }
+
         public async Task<List<Hotel>> Get(int page)
         {
             return await db.Hotels.Skip((page - 1) * 8).Take(8).ToListAsync();

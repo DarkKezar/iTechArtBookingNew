@@ -27,6 +27,12 @@ namespace iTechArtBookingNew.Controllers.API
             return await Repository.Add(data);
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Guid roomId)
+        {
+            return await Repository.Delete(roomId);
+        }
+
         [HttpGet]
         public async Task<List<Room>> Get(Guid hotelId, int page)
         {

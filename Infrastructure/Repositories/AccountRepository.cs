@@ -1,6 +1,6 @@
-﻿using Core.FormModels;
+﻿using AutoMapper;
+using Core.FormModels;
 using Core.Models;
-using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -10,24 +10,33 @@ using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using iTechArtBookingNew;
+using Microsoft.EntityFrameworkCore;
 
-namespace iTechArtBookingNew.Controllers.API
+namespace Infrastructure.Repositories
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LogInController : ControllerBase
+    public class AccountRepository
     {
-        private readonly BookingContext _bookingContext;
+        private readonly BookingContext db;
         private readonly UserManager<User> _userManager;
 
-        public LogInController(BookingContext bookingContext, UserManager<User> userManager)
+        public AccountRepository(BookingContext bookingContext, UserManager<User> userManager)
         {
-            _bookingContext = bookingContext;
+            db = bookingContext;
             _userManager = userManager ?? throw new ArgumentException("Invalid argument.");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SignIn([FromForm][Required] LogIn data)
+        public async Task<IActionResult> SignIn([Required]SignIn data)
+        {
+            var user = ModelToUser(data);
+
+            var result = await _userManager.CreateAsync(user, data.Password);
+            await _userManager.AddToRoleAsync(user, "user");
+
+            return new OkResult();
+        }
+
+        public async Task<IActionResult> LogIn([Required]LogIn data)
         {
             User User = await _userManager.FindByEmailAsync(data.Email.Normalize());
             if (User == null)
@@ -54,7 +63,26 @@ namespace iTechArtBookingNew.Controllers.API
             {
                 return new UnauthorizedObjectResult("Invalid password.");
             }
+        }
 
+        public async Task<IActionResult> Delete(Guid userId)
+        {
+            var User = await db.Users.FirstAsync(U => U.Id == userId);
+            if (User != null)
+            {
+                //some code
+                return new OkResult();
+            }
+            else return new NotFoundResult();
+        }
+
+        private User ModelToUser(SignIn model)
+        {
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<SignIn, User>());
+            var mapper = new Mapper(config);
+            var User = mapper.Map<SignIn, User>(model);
+
+            return User;
         }
 
         private JwtSecurityToken GetNewToken(List<Claim> Claims)
