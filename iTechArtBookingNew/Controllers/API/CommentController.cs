@@ -31,7 +31,7 @@ namespace iTechArtBookingNew.Controllers.API
         {
             return await Repository.Add((await _userManager.GetUserAsync(HttpContext.User)).Id, hotelId, feedback, mark);
         }
-
+        [HttpGet]
         public async Task<List<Comment>> Get(Guid hotelId, int page)
         {
             return await Repository.Get(hotelId, page);
