@@ -36,7 +36,7 @@ namespace Infrastructure.Repositories
             {
                 Name = data.Name,
                 Info = data.Info,
-                IngSrc = "/HotelsImg/" + data.Img.FileName
+                ImgSrc = "/HotelsImg/" + data.Img.FileName
             });
             await db.SaveChangesAsync();
             return new OkResult();
@@ -49,7 +49,7 @@ namespace Infrastructure.Repositories
             {
                 try
                 {
-                    File.Delete(_hostingEnvironment.ContentRootPath + "/wwwroot" + Hotel.IngSrc);
+                    File.Delete(_hostingEnvironment.ContentRootPath + "/wwwroot" + Hotel.ImgSrc);
                     var Rooms = db.Rooms.Where(R => R.Hotel == Hotel);
                     foreach (var Room in Rooms)
                     {

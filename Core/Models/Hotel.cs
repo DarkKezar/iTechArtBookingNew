@@ -10,7 +10,7 @@ namespace Core.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Info { get; set; }
-        public string IngSrc { get; set; }
+        public string ImgSrc { get; set; }
         public List<Room> Rooms { get; set; }
     }
 }
